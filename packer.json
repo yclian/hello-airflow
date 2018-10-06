@@ -1,0 +1,29 @@
+{
+  "variables": {
+
+    "read_first": "Go to https://cloud-images.ubuntu.com/locator/ec2/ for hvm:ebs-ssd source AMI.",
+
+    "aws_profile": "",
+    "ssh_keypair_name": "HelloAirflow",
+    "ssh_private_key_file": "./HelloAirflow.pem"
+  },
+  "builders": [{
+    "type": "amazon-ebs",
+    "vpc_id": "vpc-ff84dd86",
+    "subnet_id": "subnet-48a82d31",
+    "source_ami": "ami-0e32ec5bc225539f5",
+    "instance_type": "t3.small",
+    "ssh_username": "ubuntu",
+    "ssh_keypair_name": "{{user `ssh_keypair_name`}}",
+    "ssh_private_key_file": "{{user `ssh_private_key_file`}}",
+    "ami_name": "hello-airflow {{timestamp}}"
+  }],
+  "provisioners": [
+    { "type": "file", "source": "packer/files", "destination": "/tmp/packer" },
+    { "type": "shell", "script": "packer/setup-python.sh" },
+    { "type": "shell", "script": "packer/setup-apps.sh" },
+    { "type": "shell", "inline": [
+      ""
+    ]}
+  ]
+}
